@@ -5,6 +5,16 @@
     ansible_ssh_common_args: "-o StrictHostKeyChecking=no" #Disable check for new hosts
   tasks:
 
+    - name: Check if file exists
+      stat:
+        path: ~/.config/pip/pip.conf
+      register: file_stat
+    - name: Delete file if it exists
+      file:
+        path: ~/.config/pip/pip.conf
+        state: absent
+      when: file_stat.stat.exists
+
     - name: Add configuration to pip.conf to allow Python to work without venv
       lineinfile:
         path: ~/.config/pip/pip.conf
