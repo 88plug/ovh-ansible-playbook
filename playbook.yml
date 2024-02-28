@@ -134,10 +134,6 @@
         - { name: 'vm.max_map_count', value: '262144' }
         - { name: 'fs.aio-max-nr', value: '524288' }
 
-
-    - name: Clear all journald logs
-      command: journalctl --vacuum-time=1s
-
     - name: Install Chisel dependencies
       apt:
         name:
@@ -150,6 +146,13 @@
     - name: Install Chisel
       shell: |
         curl https://i.jpillora.com/chisel! | bash
+      args:
+        executable: /bin/bash
+
+    - name: Install Neofetch
+      shell: |
+        wget http://ftp.us.debian.org/debian/pool/main/n/neofetch/neofetch_7.1.0-4_all.deb
+        dpkg -i neofetch_7.1.0-4_all.deb
       args:
         executable: /bin/bash
 
@@ -174,6 +177,8 @@
           [Install]
           WantedBy=multi-user.target
 
+    - name: Clear all journald logs
+      command: journalctl --vacuum-time=1s
 
     - name: Run BleachBit
       command: bleachbit --clean system.rotated_logs system.cache apt.*
