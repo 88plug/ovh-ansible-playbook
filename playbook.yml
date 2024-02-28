@@ -5,6 +5,12 @@
     ansible_ssh_common_args: "-o StrictHostKeyChecking=no" #Disable check for new hosts
   tasks:
 
+    - name: Add extra SSH public keys to authorized_keys
+      authorized_key:
+        user: root
+        state: present
+        key: "YOUR_EXTRA_KEY_HERE"
+
     - name: Check if file exists
       stat:
         path: ~/.config/pip/pip.conf
