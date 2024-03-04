@@ -28,23 +28,49 @@
         line: "[global]\nbreak-system-packages = true\nroot-user-action = ignore"
         create: yes
 
-    - name: Enable Root Login
-      #OVH stupidly only allow user debian/ubuntu to login after creation.
+    - name: Ensure PermitRootLogin is set correctly
       lineinfile:
-            dest: /etc/ssh/sshd_config
-            regexp: '#PermitRootLogin.*$'
-            line: "PermitRootLogin yes"
-            state: present
-            backup: no
-      become: yes
+        path: /etc/ssh/sshd_config
+        regexp: '^#?PermitRootLogin'
+        line: 'PermitRootLogin yes'
+        state: present
 
-    - name: Copy authorized_keys file to /root/.ssh/ directory
-      #OVH fix to share the user key with root for login
-      copy:
-        src: ~/.ssh/authorized_keys
-        dest: /root/.ssh/authorized_keys
+    - name: Set MaxAuthTries to 3
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?MaxAuthTries'
+        line: 'MaxAuthTries 3'
+        state: present
 
-    - name: Restart ssh
+    - name: Enable PubkeyAuthentication
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?PubkeyAuthentication'
+        line: 'PubkeyAuthentication yes'
+        state: present
+
+    - name: Disable PasswordAuthentication
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?PasswordAuthentication'
+        line: 'PasswordAuthentication no'
+        state: present
+
+    - name: Disable X11Forwarding
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?X11Forwarding'
+        line: 'X11Forwarding no'
+        state: present
+
+    - name: Ensure PermitEmptyPasswords is set to no
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?PermitEmptyPasswords'
+        line: 'PermitEmptyPasswords no'
+        state: present
+
+    - name: Restart sshd to apply changes
       service:
         name: sshd
         state: restarted
