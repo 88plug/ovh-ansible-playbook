@@ -9,8 +9,7 @@
       authorized_key:
         user: root
         state: present
-        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
-#        key: "YOUR_EXTRA_KEY_HERE"
+        key: "YOUR_EXTRA_KEY_HERE"
 
     - name: Check if file exists
       stat:
