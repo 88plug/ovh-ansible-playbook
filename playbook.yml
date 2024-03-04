@@ -10,7 +10,8 @@
         user: root
         state: present
         key: "YOUR_EXTRA_KEY_HERE"
-
+      become: yes
+      
     - name: Check if file exists
       stat:
         path: ~/.config/pip/pip.conf
